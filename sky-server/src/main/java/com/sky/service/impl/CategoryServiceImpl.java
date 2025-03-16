@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -47,6 +48,10 @@ public class CategoryServiceImpl implements CategoryService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 新增分类
+     * @param categoryDTO 新增的分类
+     */
     @Override
     public void save(CategoryDTO categoryDTO) {
         Category category = Category.builder()
@@ -60,5 +65,35 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
         categoryMapper.insert(category);
 
+    }
+
+    /**
+     * 根据id删除分类
+     * @param id 分类id
+     */
+    @Override
+    public void deleteById(Long id) {
+        categoryMapper.deleteById(id);
+    }
+
+    /**
+     * 设置启售停售,使用泛用的数据层更新方法
+     * @param status 启售停售状态
+     * @param id 分类id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        Category category = Category.builder()
+                .status(status)
+                .id(id)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
+        categoryMapper.update(category);
+    }
+
+    @Override
+    public List<Category> list(Integer type) {
+        return categoryMapper.list(type);
     }
 }

@@ -24,4 +24,5 @@ public class MessageConstant {
     public static final String ORDER_STATUS_ERROR = "订单状态错误";
     public static final String ORDER_NOT_FOUND = "订单不存在";
     public static final String ALREADY_EXISTS = "用户名重复";
+    public static final String DISABLE_TO_CHANGE_SELF = "不能修改自己的账号状态";
 }

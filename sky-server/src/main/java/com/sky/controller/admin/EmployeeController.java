@@ -1,6 +1,8 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.constant.MessageConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -67,6 +69,7 @@ public class EmployeeController {
 
     /**
      * 退出登录
+     *
      * @return
      */
     @PostMapping("/logout")
@@ -77,6 +80,7 @@ public class EmployeeController {
 
     /**
      * 新增员工
+     *
      * @param employeeDTO
      * @return
      */
@@ -90,6 +94,7 @@ public class EmployeeController {
 
     /**
      * 分页查询员工
+     *
      * @param employeePageQueryDTO
      * @return Result<PageResult> 封装分页结果
      */
@@ -101,4 +106,22 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 修改员工状态
+     *
+     * @param status
+     * @param id
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("修改员工状态")
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("修改员工状态：status:{} id:{}", status, id);
+        if (id.equals(BaseContext.getCurrentId())) {
+            return Result.error(MessageConstant.DISABLE_TO_CHANGE_SELF);
+        }else {
+            employeeService.startOrStop(status, id);
+            return Result.success();
+        }
+
+    }
 }

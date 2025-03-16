@@ -20,4 +20,10 @@ public interface CategoryMapper {
      * @return
      */
     Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 向表中插入新的分类
+     * @param category 新的分类
+     */
+    void insert(Category category);
 }

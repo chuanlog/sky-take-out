@@ -10,14 +10,20 @@ import com.sky.result.PageResult;
 public interface CategoryService {
     /**
      * 修改分类
-     * @param categoryDTO
+     * @param categoryDTO 修改分类的参数
      */
     void update(CategoryDTO categoryDTO);
 
     /**
      * 分类分页查询
-     * @param categoryPageQueryDTO
-     * @return
+     * @param categoryPageQueryDTO 查询参数
+     * @return 分页查询结果
      */
     PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 增加新的分类
+     * @param categoryDTO 新增的分类
+     */
+    void save(CategoryDTO categoryDTO);
 }

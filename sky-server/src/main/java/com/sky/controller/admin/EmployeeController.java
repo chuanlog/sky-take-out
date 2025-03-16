@@ -118,10 +118,38 @@ public class EmployeeController {
         log.info("修改员工状态：status:{} id:{}", status, id);
         if (id.equals(BaseContext.getCurrentId())) {
             return Result.error(MessageConstant.DISABLE_TO_CHANGE_SELF);
-        }else {
+        } else {
             employeeService.startOrStop(status, id);
             return Result.success();
         }
 
+    }
+
+    /**
+     * 编辑员工信息
+     *
+     * @param employeeDTO
+     * @return Result
+     */
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工信息：{}", employeeDTO);
+        employeeService.updateEmployee(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return Result 查询结果
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工信息")
+    public Result<Employee> getById(@PathVariable Long id) {
+        log.info("根据id查询员工信息：{}", id);
+        Employee employee = employeeService.getById(id);
+        employee.setPassword("******");//密码不返回
+        return Result.success(employee);
     }
 }

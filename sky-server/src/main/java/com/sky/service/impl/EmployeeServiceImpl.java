@@ -85,9 +85,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
 
-        //设置创建人、修改人 TODO 后期需要获取当前登录用户id
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //设置创建人、修改人
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
 
@@ -96,6 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询员工
+     *
      * @param employeePageQueryDTO 查询条件
      * @return PageResult
      */
@@ -106,20 +107,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 设置启用禁用员工
+     *
+     * @param status 状态
+     * @param id     员工id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
         Employee employee = Employee.builder()
                 .status(status)
                 .id(id)
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
         employeeMapper.updateEmployee(employee);
     }
 
     /**
      * 根据id查询员工
-     * @param id
+     *
+     * @param id 员工id
      */
     @Override
     public Employee getById(@PathVariable Long id) {
@@ -128,14 +136,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 编辑员工信息
-     * @param employeeDTO
+     *
+     * @param employeeDTO 员工信息
      */
     @Override
     public void updateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.updateEmployee(employee);
 
     }

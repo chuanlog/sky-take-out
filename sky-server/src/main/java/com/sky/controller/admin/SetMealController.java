@@ -20,11 +20,29 @@ public class SetMealController {
     @Autowired
     SetMealService setMealService;
 
+    /**
+     * 新增套餐
+     * @param setMealDTO setMealDTO
+     * @return
+     */
     @PostMapping
     @ApiOperation("新增套餐")
     public Result save(@RequestBody SetmealDTO setMealDTO) {
         log.info("新增套餐:{}", setMealDTO);
         setMealService.saveWithDish(setMealDTO);
+        return Result.success() ;
+    }
+
+    /**
+     * 修改套餐
+     * @param setMealDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result update(@RequestBody SetmealDTO setMealDTO) {
+        log.info("修改套餐:{}", setMealDTO);
+        setMealService.updateWithDish(setMealDTO);
         return Result.success() ;
     }
 }

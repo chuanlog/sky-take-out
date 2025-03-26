@@ -11,4 +11,10 @@ public interface SetMealService {
      * @param setmealDTO setmealDTO
      */
     void saveWithDish(SetmealDTO setmealDTO);
+
+    /**
+     * 修改套餐
+     * @param setMealDTO setMealDTO
+     */
+    void updateWithDish(SetmealDTO setMealDTO);
 }

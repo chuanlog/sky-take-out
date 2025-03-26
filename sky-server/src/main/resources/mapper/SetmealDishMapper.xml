@@ -10,6 +10,10 @@
             (#{setmealDish.setmealId}, #{setmealDish.dishId}, #{setmealDish.name}, #{setmealDish.price}, #{setmealDish.copies})
         </foreach>
     </insert>
+    <!-- 根据套餐id删除套餐菜品数据 -->
+    <delete id="deleteBySetmealId">
+        delete from setmeal_dish where setmeal_id = #{setmealId}
+    </delete>
     <!-- 根据菜品id查询套餐id集合 -->
     <select id="getSetmealIdsByDishId" resultType="java.lang.Long">
         select setmeal_id from setmeal_dish where dish_id in

@@ -21,4 +21,7 @@
             #{dishId}
         </foreach>
     </select>
+    <select id="countByDishId" resultType="java.lang.Integer">
+        select count(*) from setmeal_dish where dish_id = #{id}
+    </select>
 </mapper>

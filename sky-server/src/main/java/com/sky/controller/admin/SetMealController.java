@@ -4,8 +4,7 @@ import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
-import com.sky.service.SetMealService;
-import com.sky.vo.SetmealVO;
+import com.sky.service.SetmealService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import java.util.List;
 @Api(tags = "套餐相关接口")
 public class SetMealController {
     @Autowired
-    SetMealService setMealService;
+    SetmealService setMealService;
 
     /**
      * 新增套餐

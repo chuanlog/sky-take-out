@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -16,11 +17,14 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.sky.exception.DeletionNotAllowedException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -34,6 +38,7 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private SetmealDishMapper setmealDishMapper;
 
+
     /**
      * 新增菜品
      *
@@ -42,6 +47,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public void saveWithFlavor(DishDTO dishDTO) {
+
         //插入菜品数据
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
@@ -140,6 +146,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 根据分类id查询菜品
+     *
      * @param categoryId 分类id
      * @return 菜品列表
      */
@@ -147,5 +154,58 @@ public class DishServiceImpl implements DishService {
     public List<Dish> getByCategoryId(Long categoryId) {
         List<Dish> dishes = dishMapper.getByCategoryId(categoryId);
         return dishes;
+    }
+
+    /**
+     * 条件查询菜品和口味
+     *
+     * @param dish
+     * @return
+     */
+    @Override
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<Dish> dishList = dishMapper.list(dish);
+
+        List<DishVO> dishVOList = new ArrayList<>();
+
+        for (Dish d : dishList) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d, dishVO);
+
+            //根据菜品id查询对应的口味
+            List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
+
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        }
+
+        return dishVOList;
+    }
+
+    @Override
+    public void startOrStop(Integer status, Long id) {
+
+        if (Objects.equals(status, StatusConstant.ENABLE)) {
+            // 停售菜品，需要判断是否关联套餐，如果关联套餐，则无法停售
+            // 查询当前菜品是否关联套餐
+            int count = setmealDishMapper.countByDishId(id);
+            if (count > 0) {
+                // 当前菜品关联套餐，不能停售
+                throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+            }
+            // 修改菜品状态
+            Dish dish = Dish.builder()
+                    .id(id)
+                    .status(status)
+                    .build();
+            dishMapper.update(dish);
+        } else {
+            // 修改菜品状态
+            Dish dish = Dish.builder()
+                    .id(id)
+                    .status(status)
+                    .build();
+            dishMapper.update(dish);
+        }
     }
 }

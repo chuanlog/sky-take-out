@@ -29,4 +29,11 @@ public interface SetmealDishMapper {
      * @param id id
      */
     void deleteBySetmealId(Long id);
+
+    /**
+     * 根据菜品id查询套餐菜品数据
+     * @param id id
+     * @return List<SetmealDish>
+     */
+    int countByDishId(Long id);
 }

@@ -4,7 +4,6 @@ import com.sky.annotation.AutoFill;
 import com.sky.constant.AutoFillConstant;
 import com.sky.context.BaseContext;
 import com.sky.enumeration.OperationType;
-import javassist.bytecode.SignatureAttribute;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

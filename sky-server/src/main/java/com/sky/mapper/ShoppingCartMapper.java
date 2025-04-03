@@ -25,4 +25,10 @@ public interface ShoppingCartMapper {
      * @param shoppingCart 购物车数据
      */
     void insert(ShoppingCart shoppingCart);
+
+    /**
+     * 按条件删除
+     * @param shoppingCart 购物车条件
+     */
+    void delete(ShoppingCart shoppingCart);
 }

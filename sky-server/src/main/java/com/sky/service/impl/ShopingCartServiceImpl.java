@@ -9,7 +9,6 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.ShoppingCartService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,6 +58,46 @@ public class ShopingCartServiceImpl implements ShoppingCartService {
 
         // 插入到购物车
         shoppingCartMapper.insert(shoppingCart);
+    }
+
+    /**
+     * 获取购物车信息
+     *
+     * @return 购物车信息
+     */
+    @Override
+    public List<ShoppingCart> showShopingCart() {
+        Long userId = BaseContext.getCurrentId();
+        return shoppingCartMapper.list(ShoppingCart.builder().userId(userId).build());
+    }
+
+    /**
+     * 清空购物车
+     */
+    @Override
+    public void clean() {
+        //构造查询条件
+        Long id = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = ShoppingCart.builder().userId(id).build();
+        //删除
+        shoppingCartMapper.delete(shoppingCart);
+    }
+
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        //构造查询条件
+        Long id = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart=new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+        shoppingCart.setUserId(id);
+        List<ShoppingCart> list=shoppingCartMapper.list(shoppingCart);
+        shoppingCart=list.get(0);
+        if (shoppingCart.getNumber()==1){
+            shoppingCartMapper.delete(shoppingCart);
+        }else {
+            shoppingCart.setNumber(shoppingCart.getNumber()-1);
+            shoppingCartMapper.update(shoppingCart);
+        }
     }
 
     /**

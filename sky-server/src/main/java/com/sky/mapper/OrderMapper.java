@@ -31,4 +31,11 @@ public interface OrderMapper {
      */
     void update(Orders orders);
 
+
+    /**
+     * 订单分页查询
+     * @param ordersPageQueryDTO 查询条件
+     * @return
+     */
+    Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 }

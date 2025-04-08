@@ -34,4 +34,11 @@ public interface OrderService {
      * @return
      */
     PageResult pageQuery4User(int page, int pageSize, Integer status);
+
+    /**
+     * 历史订单详情
+     * @param id 订单id
+     * @return
+     */
+    OrderVO details(Long id);
 }

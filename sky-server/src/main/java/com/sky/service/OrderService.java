@@ -41,4 +41,10 @@ public interface OrderService {
      * @return
      */
     OrderVO details(Long id);
+
+    /**
+     * 用户取消订单
+     * @param id 订单id
+     */
+    void userCancelById(Long id);
 }

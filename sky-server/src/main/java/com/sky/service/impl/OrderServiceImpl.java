@@ -13,18 +13,23 @@ import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -242,7 +247,28 @@ public class OrderServiceImpl implements OrderService {
         updateOrder.setCancelReason("用户取消");
         updateOrder.setCancelTime(LocalDateTime.now());
         orderMapper.update(updateOrder);
+    }
+
+    /**
+     * 再来一单
+     * @param id 订单id
+     */
+    @Override
+    public void repetition(Long id) {
+        // 先把订单内容查出来
+        List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(id);
+        //先清空购物车
+        shoppingCartMapper.deleteByUserId(BaseContext.getCurrentId());
+        // 构建新的购物车对象并插入
+        for (OrderDetail orderDetail : orderDetails) {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail,shoppingCart);
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCartMapper.insert(shoppingCart);
+        }
 
     }
+
 
 }

@@ -96,4 +96,17 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * 再来一单(实际上是向购物车中重新加入订单内容)
+     *
+     * @param id 订单id
+     * @return
+     */
+    @PostMapping("/repetition/{id}")
+    @ApiOperation("再来一单")
+    public Result repetition(@PathVariable Long id) {
+        orderService.repetition(id);
+        return Result.success();
+    }
+
 }

@@ -53,4 +53,47 @@ public interface OrderService {
      * @param id 订单id
      */
     void repetition(Long id);
+
+    /**
+     * 条件搜索订单
+     * @param orderPageQueryDTO 查询条件
+     * @return
+     */
+    PageResult conditionSearch(OrdersPageQueryDTO orderPageQueryDTO);
+
+    /**
+     * 统计订单状态
+     * @return OrderStatisticsVO
+     */
+    OrderStatisticsVO statistics();
+
+    /**
+     * 接单
+     * @param ordersConfirmDTO 接单参数
+     */
+    void confirm(OrdersConfirmDTO ordersConfirmDTO);
+
+    /**
+     * 拒单
+     * @param ordersRejectionDTO
+     */
+    void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception;
+
+    /**
+     * 取消订单
+     * @param ordersCancelDTO
+     */
+    void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception;
+
+    /**
+     * 派送订单
+     * @param id
+     */
+    void delivery(Long id);
+
+    /**
+     * 完成订单
+     * @param id
+     */
+    void complete(Long id);
 }

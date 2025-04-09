@@ -55,4 +55,11 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer deliveryInProgress, LocalDateTime time);
+
+    /**
+     * 查询对应时间区间的营业额
+     * @param map 时间区间
+     * @return 营业额
+     */
+    Double sumByMap(Map map);
 }

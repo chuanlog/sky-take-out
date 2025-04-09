@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.RedisKeyConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.*;
 import com.sky.entity.*;
@@ -24,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +56,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressBookMapper addressBookMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 用户下单
@@ -90,8 +95,11 @@ public class OrderServiceImpl implements OrderService {
         order.setPayStatus(Orders.UN_PAID);
         order.setOrderTime(LocalDateTime.now());
 
-        //向订单表插入1条数据
+        // 向订单表插入1条数据
         orderMapper.insert(order);
+        // 将这条数据放入Redis中并设置score时间15min
+        long expireTime = System.currentTimeMillis() + 15 * 60 * 1000;
+        redisTemplate.opsForZSet().add(RedisKeyConstant.ORDERS_ZSET_KEY, order.getId(), expireTime);
 
         //订单明细数据
         List<OrderDetail> orderDetailList = new ArrayList<>();

@@ -46,4 +46,13 @@ public interface OrderMapper {
      */
     @Select("select * from orders where id = #{id}")
     Orders getById(Long id);
+
+    /**
+     * 查询某个时间之前处于派送中的订单
+     * @param deliveryInProgress 派送中
+     * @param time 时间
+     * @return 订单集合
+     */
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
+    List<Orders> getByStatusAndOrderTimeLT(Integer deliveryInProgress, LocalDateTime time);
 }

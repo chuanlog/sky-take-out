@@ -21,6 +21,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -58,6 +59,8 @@ public class OrderServiceImpl implements OrderService {
     private WeChatPayUtil weChatPayUtil;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -115,6 +118,16 @@ public class OrderServiceImpl implements OrderService {
 
         //清理购物车中的数据
         shoppingCartMapper.deleteByUserId(userId);
+
+        // 通过websocket向客户端发送来单信息
+        Map map = new HashMap<>();
+        map.put("type", 1);
+        map.put("orderId", order.getId());
+        map.put("content", "来单了,订单号："+ order.getNumber());
+        String json= JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+
+
 
         //封装返回结果
         OrderSubmitVO orderSubmitVO = OrderSubmitVO.builder()
@@ -417,6 +430,26 @@ public class OrderServiceImpl implements OrderService {
         orders.setDeliveryTime(LocalDateTime.now());
 
         orderMapper.update(orders);
+    }
+
+    /**
+     * 订单催单，用websocket实现
+     * @param id
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders orders = orderMapper.getById(id);
+        //校验订单是否存在，并且状态为2
+        if (orders == null || !orders.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Map map = new HashMap();
+        map.put("type", 2);
+        map.put("orderId", id);
+        map.put("content", "订单号：" + orders.getNumber());
+        String jsonString = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
     }
 
     private List<OrderVO> getOrderVOList(Page<Orders> page) {

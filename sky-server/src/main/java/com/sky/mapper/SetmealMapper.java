@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.SetmealPageQueryDTO;
@@ -21,6 +22,7 @@ public interface SetmealMapper {
      * @param id
      * @return
      */
+    @DS("slave")
     @Select("select count(id) from setmeal where category_id = #{categoryId}")
     Integer countByCategoryId(Long id);
 
@@ -28,6 +30,7 @@ public interface SetmealMapper {
      * 插入一个套餐数据
      * @param setmeal
      */
+    @DS("master")
     @AutoFill(value = OperationType.INSERT)
     void save(Setmeal setmeal);
 
@@ -35,6 +38,7 @@ public interface SetmealMapper {
      * 更新一个套餐数据
      * @param setmeal 要更新的套餐数据
      */
+    @DS("master")
     @AutoFill(value = OperationType.UPDATE)
     void update(Setmeal setmeal);
 
@@ -43,12 +47,14 @@ public interface SetmealMapper {
      * @param id 套餐id
      * @return 套餐数据
      */
+    @DS("slave")
     Setmeal getById(Long id);
 
     /**
      * 根据id删除套餐数据
      * @param id 套餐id
      */
+    @DS("master")
     void deleteById(Long id);
 
     /**
@@ -56,6 +62,7 @@ public interface SetmealMapper {
      * @param setmealPageQueryDTO
      * @return
      */
+    @DS("slave")
     Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
 
 
@@ -64,6 +71,7 @@ public interface SetmealMapper {
      * @param setmeal
      * @return
      */
+    @DS("slave")
     List<Setmeal> list(Setmeal setmeal);
 
     /**
@@ -71,6 +79,7 @@ public interface SetmealMapper {
      * @param setmealId
      * @return
      */
+    @DS("slave")
     @Select("select sd.name, sd.copies, d.image, d.description " +
             "from setmeal_dish sd left join dish d on sd.dish_id = d.id " +
             "where sd.setmeal_id = #{setmealId}")
@@ -81,6 +90,7 @@ public interface SetmealMapper {
      * @param map
      * @return
      */
+    @DS("slave")
     Integer countByMap(Map map);
 
 }

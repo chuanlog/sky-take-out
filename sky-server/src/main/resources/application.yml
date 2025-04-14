@@ -7,11 +7,28 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    druid:
-      driver-class-name: ${sky.datasource.driver-class-name}
-      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: ${sky.datasource.username}
-      password: ${sky.datasource.password}
+    dynamic:
+      primary: ${sky.datasource.dynamic.primary} # 默认使用数据库
+      datasource:
+        master: #----------------主数据库配置(写入)----------------
+          url: ${sky.datasource.dynamic.datasource.master.url}
+          username: ${sky.datasource.dynamic.datasource.master.username}
+          password: ${sky.datasource.dynamic.datasource.master.password}
+          driver-class-name: ${sky.datasource.dynamic.datasource.master.driver-class-name}
+          type: ${sky.datasource.dynamic.datasource.master.type}
+        slave: #----------------从库(读取)----------------
+          url: ${sky.datasource.dynamic.datasource.slave.url}
+          username: ${sky.datasource.dynamic.datasource.slave.username}
+          password: ${sky.datasource.dynamic.datasource.slave.password}
+          driver-class-name: ${sky.datasource.dynamic.datasource.slave.driver-class-name}
+          type: ${sky.datasource.dynamic.datasource.slave.type}
+      druid:
+        initial-size: ${sky.datasource.dynamic.druid.initial-size}
+        max-active: ${sky.datasource.dynamic.druid.max-active}
+        min-idle: ${sky.datasource.dynamic.druid.min-idle}
+        max-wait: ${sky.datasource.dynamic.druid.max-wait}
+  autoconfigure: # 去除druid配置
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 
 mybatis:
   #mapper配置文件

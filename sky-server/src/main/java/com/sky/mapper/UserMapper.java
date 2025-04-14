@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.sky.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,12 +13,14 @@ public interface UserMapper {
      * @param openid openid
      * @return User
      */
+    @DS("slave")
     User getByOpenid(String openid);
 
     /**
      * 新增用户
      * @param user user
      */
+    @DS("master")
     void insert(User user);
 
     /**
@@ -25,6 +28,7 @@ public interface UserMapper {
      * @param userId
      * @return
      */
+    @DS("slave")
     User getById(Long userId);
 
     /**
@@ -33,5 +37,6 @@ public interface UserMapper {
      * @param map
      * @return
      */
+    @DS("slave")
     Integer countByMap(Map map);
 }

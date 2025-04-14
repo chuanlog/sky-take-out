@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -16,6 +17,7 @@ public interface EmployeeMapper {
      * @param username
      * @return
      */
+    @DS("slave")
     Employee getByUsername(String username);
 
     /**
@@ -23,6 +25,7 @@ public interface EmployeeMapper {
      *
      * @param employee
      */
+    @DS("master")
     @AutoFill(value = OperationType.INSERT)
     void insert(Employee employee);
 
@@ -31,12 +34,14 @@ public interface EmployeeMapper {
      * @param employeePageQueryDTO 查询条件
      * @return Page 分页查询结果
      */
+    @DS("slave")
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
     /**
      * 修改员工信息
      * @param employee 员工信息
      */
+    @DS("master")
     @AutoFill(value = OperationType.UPDATE)
     void updateEmployee(Employee employee);
 
@@ -45,5 +50,6 @@ public interface EmployeeMapper {
      * @param id 员工id
      * @return 员工信息
      */
+    @DS("slave")
     Employee getById(Long id);
 }

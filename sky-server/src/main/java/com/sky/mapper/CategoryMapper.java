@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.CategoryPageQueryDTO;
@@ -17,6 +18,7 @@ public interface CategoryMapper {
      * 插入数据
      * @param category
      */
+    @DS("master")
     @AutoFill(value = OperationType.INSERT)
     void insert(Category category);
 
@@ -25,12 +27,14 @@ public interface CategoryMapper {
      * @param categoryPageQueryDTO
      * @return
      */
+    @DS("slave")
     Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 
     /**
      * 根据id删除分类
      * @param id
      */
+    @DS("master")
     @Delete("delete from category where id = #{id}")
     void deleteById(Long id);
 
@@ -38,6 +42,7 @@ public interface CategoryMapper {
      * 根据id修改分类
      * @param category
      */
+    @DS("master")
     @AutoFill(value = OperationType.UPDATE)
     void update(Category category);
 
@@ -46,5 +51,6 @@ public interface CategoryMapper {
      * @param type
      * @return
      */
+    @DS("slave")
     List<Category> list(Integer type);
 }

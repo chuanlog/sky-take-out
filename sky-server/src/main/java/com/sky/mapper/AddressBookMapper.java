@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.sky.entity.AddressBook;
 import org.apache.ibatis.annotations.*;
 
@@ -13,12 +14,14 @@ public interface AddressBookMapper {
      * @param addressBook
      * @return
      */
+    @DS("slave")
     List<AddressBook> list(AddressBook addressBook);
 
     /**
      * 新增
      * @param addressBook
      */
+    @DS("master")
     @Insert("insert into address_book" +
             "        (user_id, consignee, phone, sex, province_code, province_name, city_code, city_name, district_code," +
             "         district_name, detail, label, is_default)" +
@@ -31,6 +34,7 @@ public interface AddressBookMapper {
      * @param id
      * @return
      */
+    @DS("slave")
     @Select("select * from address_book where id = #{id}")
     AddressBook getById(Long id);
 
@@ -38,12 +42,14 @@ public interface AddressBookMapper {
      * 根据id修改
      * @param addressBook
      */
+    @DS("master")
     void update(AddressBook addressBook);
 
     /**
      * 根据 用户id修改 是否默认地址
      * @param addressBook
      */
+    @DS("master")
     @Update("update address_book set is_default = #{isDefault} where user_id = #{userId}")
     void updateIsDefaultByUserId(AddressBook addressBook);
 
@@ -51,6 +57,7 @@ public interface AddressBookMapper {
      * 根据id删除地址
      * @param id
      */
+    @DS("master")
     @Delete("delete from address_book where id = #{id}")
     void deleteById(Long id);
 

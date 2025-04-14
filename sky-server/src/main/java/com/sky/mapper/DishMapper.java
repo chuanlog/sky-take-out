@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.DishPageQueryDTO;
@@ -21,6 +22,7 @@ public interface DishMapper {
      * @param categoryId
      * @return
      */
+    @DS("slave")
     @Select("select count(id) from dish where category_id = #{categoryId}")
     Integer countByCategoryId(Long categoryId);
 
@@ -28,6 +30,7 @@ public interface DishMapper {
      * 插入新菜品
      * @param dish
      */
+    @DS("master")
     @AutoFill(value = OperationType.INSERT)
     void insert(Dish dish);
 
@@ -36,6 +39,7 @@ public interface DishMapper {
      * @param dishPageQueryDTO
      * @return
      */
+    @DS("slave")
     Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
 
     /**
@@ -43,6 +47,7 @@ public interface DishMapper {
      * @param id 菜品id
      * @return 查询结果
      */
+    @DS("slave")
     @Select("select * from dish where id = #{id}")
     Dish getById(Long id);
 
@@ -50,6 +55,7 @@ public interface DishMapper {
      * 删除菜品
      * @param id 菜品id
      */
+    @DS("master")
     @Delete("delete from dish where id = #{id}")
     void deleteById(Long id);
 
@@ -57,12 +63,14 @@ public interface DishMapper {
      * 批量删除菜品
      * @param ids 菜品id集合
      */
+    @DS("master")
     void deleteByIds(List<Long> ids);
 
     /**
      * 更新菜品信息
      * @param dish 新的菜品信息
      */
+    @DS("master")
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
 
@@ -71,6 +79,7 @@ public interface DishMapper {
      * @param categoryId 分类id
      * @return 查询结果
      */
+    @DS("slave")
     List<Dish> getByCategoryId(Long categoryId);
 
     /**
@@ -78,6 +87,7 @@ public interface DishMapper {
      * @param dish 查询条件
      * @return 菜品数据
      */
+    @DS("slave")
     List<Dish> list(Dish dish);
 
     /**
@@ -85,6 +95,7 @@ public interface DishMapper {
      * @param map
      * @return
      */
+    @DS("slave")
     Integer countByMap(Map map);
 
 

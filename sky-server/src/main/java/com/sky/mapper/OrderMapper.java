@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.Page;
 import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
@@ -17,12 +18,14 @@ public interface OrderMapper {
      * 插入订单数据
      * @param order
      */
+    @DS("master")
     void insert(Orders order);
 
     /**
      * 根据订单号查询订单
      * @param orderNumber
      */
+    @DS("slave")
     @Select("select * from orders where number = #{orderNumber}")
     Orders getByNumber(String orderNumber);
 
@@ -30,6 +33,7 @@ public interface OrderMapper {
      * 修改订单信息
      * @param orders
      */
+    @DS("master")
     void update(Orders orders);
 
 
@@ -38,6 +42,7 @@ public interface OrderMapper {
      * @param ordersPageQueryDTO 查询条件
      * @return
      */
+    @DS("slave")
     Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 
     /**
@@ -45,6 +50,7 @@ public interface OrderMapper {
      * @param id 订单id
      * @return
      */
+    @DS("slave")
     @Select("select * from orders where id = #{id}")
     Orders getById(Long id);
 
@@ -54,6 +60,7 @@ public interface OrderMapper {
      * @param time 时间
      * @return 订单集合
      */
+    @DS("slave")
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer deliveryInProgress, LocalDateTime time);
 
@@ -62,6 +69,7 @@ public interface OrderMapper {
      * @param map 时间区间
      * @return 营业额
      */
+    @DS("slave")
     Double sumByMap(Map map);
 
     /**
@@ -69,6 +77,7 @@ public interface OrderMapper {
      * @param map
      * @return
      */
+    @DS("slave")
     Integer countByMap(Map map);
 
     /**
@@ -77,5 +86,6 @@ public interface OrderMapper {
      * @param end
      * @return
      */
+    @DS("slave")
     List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin, LocalDateTime end);
 }
